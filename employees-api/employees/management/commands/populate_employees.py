@@ -1,6 +1,7 @@
+import random
+
 from django.core.management.base import BaseCommand
 from faker import Faker
-import random
 
 from employees.models import Employee, Location, Position, Specialization
 
@@ -17,25 +18,16 @@ class Command(BaseCommand):
         count = options['count']
 
         # Step 1 - create locations
-        cities = {
-            "Москва": "Россия",
-            "Санкт-Петербург": "Россия",
-            "Париж": "Франция",
-        }
-
-        city_objs = {
-            name: Location.objects.get_or_create(city=name, defaults={"country": country})[0]
-            for name, country in cities.items()
-        }
+        locations = Location.objects.all()
 
         # Step 2 - create employees
         employees = []
 
         for _ in range(count):
             full_name = fake.name()
-            position = random.choice([pos for pos, _ in Position.choices])
-            specialization = random.choice([spec for spec, _ in Specialization.choices])
-            city = random.choice(list(city_objs.values()))
+            position = random.choice(Position.values)
+            specialization = random.choice(Specialization.values)
+            location = random.choice(locations)
             telegram_nick = f"@{fake.unique.user_name()}"
             about = fake.sentence(nb_words=10)
 
@@ -43,7 +35,7 @@ class Command(BaseCommand):
                 full_name=full_name,
                 position=position,
                 specialization=specialization,
-                location=city,
+                location=location,
                 telegram_nick=telegram_nick,
                 about=about,
                 manager=None,

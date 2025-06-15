@@ -81,6 +81,7 @@ class CsvEmployeeLoader(BaseEmployeeLoader):
             raise
 
 
+# Factory function for loading files
 def get_loader(file_path, created_by=None) -> BaseEmployeeLoader:
     path = Path(file_path)
     if not path.exists():
