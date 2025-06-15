@@ -1,9 +1,10 @@
-from rest_framework.generics import ListAPIView
-from rest_framework.pagination import PageNumberPagination
-from employees.models import Employee
-from employees.serializers import EmployeeListSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
+
+from employees.models import Employee
+from employees.serializers import EmployeeListSerializer, EmployeeDetailSerializer
 
 
 class EmployeePagination(PageNumberPagination):
@@ -11,6 +12,8 @@ class EmployeePagination(PageNumberPagination):
 
 
 class EmployeeListView(ListAPIView):
+    permission_classes = [AllowAny]
+
     queryset = Employee.objects.select_related("manager", "location").order_by("full_name")
     serializer_class = EmployeeListSerializer
     pagination_class = EmployeePagination
@@ -21,3 +24,10 @@ class EmployeeListView(ListAPIView):
         "location__city": ["exact"],
         "manager": ["exact"],
     }
+
+
+class EmployeeDetailView(RetrieveAPIView):
+    permission_classes = [AllowAny]
+
+    queryset = Employee.objects.select_related("manager", "location")
+    serializer_class = EmployeeDetailSerializer

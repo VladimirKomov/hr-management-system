@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -37,7 +38,7 @@ class Location(models.Model):
         return f"{self.city}, {self.country}"
 
 
-# Конкретный сотрудник - информацию о конкретном котруднике
+# Конкретный сотрудник - информацию о конкретном сотруднике
 class Employee(models.Model):
     full_name = models.CharField("ФИО полностью", max_length=100)
     position = models.CharField("Должность", max_length=30, choices=Position.choices)
@@ -52,6 +53,13 @@ class Employee(models.Model):
         blank=True,
         related_name='subordinates',
         verbose_name="Руководитель"
+    )
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="employee"
     )
 
     def __str__(self):
