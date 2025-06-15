@@ -60,8 +60,8 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
 
 
 class EmployeeCreateSerializer(serializers.ModelSerializer):
-    city = serializers.CharField()
-    country = serializers.CharField()
+    city = serializers.CharField(write_only=True)
+    country = serializers.CharField(write_only=True)
 
     class Meta:
         model = Employee
@@ -127,6 +127,7 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         city = validated_data.pop("city")
         country = validated_data.pop("country")
+        manager = validated_data.pop("manager", None)
 
         logger.debug(f"[CREATE INPUT] Попытка создания сотрудника: {validated_data}, город: {city}, страна: {country}")
 
@@ -138,6 +139,11 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
                 "location": f"Локация '{city}, {country}' не найдена в системе."
             })
 
-        employee = Employee.objects.create(location=location, **validated_data)
+        employee = Employee.objects.create(
+            location=location,
+            manager=manager,
+            **validated_data
+            )
+
         logger.info(f"[CREATE] Сотрудник создан: {employee.full_name} (id={employee.id})")
         return employee
