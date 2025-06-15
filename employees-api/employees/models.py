@@ -36,6 +36,7 @@ class Location(models.Model):
     def __str__(self):
         return f"{self.city}, {self.country}"
 
+
 # Конкретный сотрудник - информацию о конкретном котруднике
 class Employee(models.Model):
     full_name = models.CharField("ФИО полностью", max_length=100)
