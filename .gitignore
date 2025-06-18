@@ -1,1 +1,6 @@
 /.idea/
+/employees-api/.env
+/employees-api/db.sqlite3
+
+/employees-api/logs/all.log
+/employees-api/logs/errors.log
